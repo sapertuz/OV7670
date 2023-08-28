@@ -408,7 +408,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>462d08b0</spirit:value>
+            <spirit:value>08b6cc13</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1202,14 +1202,14 @@
         <xilinx:xpmLibrary>XPM_MEMORY</xilinx:xpmLibrary>
       </xilinx:xpmLibraries>
       <xilinx:vendorURL>https://www.kampis-elektroecke.de</xilinx:vendorURL>
-      <xilinx:coreRevision>2</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-08-27T12:52:35Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>3</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-08-27T20:35:41Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2023.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="d509ab1a"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="1bdd2282"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="28f8c1b5"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="bfb96a93"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="c33ee381"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="efcc9ea1"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="6b6ebd37"/>

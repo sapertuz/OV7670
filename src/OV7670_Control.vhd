@@ -7,7 +7,7 @@
 -- Module Name:         OV7670_Control - OV7670_Control_Arch
 -- Project Name:        OV7670
 -- Target Devices:
--- Tool Versions:       Vivado 2020.2
+-- Tool Versions:       Vivado 2023.1
 -- Description:         OV7670 image sensor control module.
 -- 
 -- Dependencies:
