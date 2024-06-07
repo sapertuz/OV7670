@@ -7,7 +7,7 @@
 -- Module Name:         S_AXI_Lite - S_AXI_Lite_Arch
 -- Project Name:        OV7670
 -- Target Devices:
--- Tool Versions:       Vivado 2023.1
+-- Tool Versions:       Vivado 2020.2
 -- Description:         AXI Lite slave interface for the image sensor configuration interface.
 -- 
 -- Dependencies:

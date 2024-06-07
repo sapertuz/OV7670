@@ -6,6 +6,62 @@
   <spirit:version>1.0</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
+      <spirit:name>OV7670</spirit:name>
+      <spirit:busType spirit:vendor="www.kampis-elektroecke.de" spirit:library="Kampis-Elektroecke" spirit:name="OV7670" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="www.kampis-elektroecke.de" spirit:library="Kampis-Elektroecke" spirit:name="OV7670_rtl" spirit:version="1.0"/>
+      <spirit:master/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>HREF</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>OV7670_HREF</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>VSYNC</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>OV7670_VSYNC</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>D</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>OV7670_D</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>PCLK</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>OV7670_PCLK</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>nReset</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>OV7670_nRESET</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>PWDN</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>OV7670_PWDN</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+    <spirit:busInterface>
       <spirit:name>M_AXIS</spirit:name>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="axis" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="axis_rtl" spirit:version="1.0"/>
@@ -283,10 +339,6 @@
           <spirit:name>ASSOCIATED_RESET</spirit:name>
           <spirit:value spirit:id="BUSIFPARAM_VALUE.M_AXIS_ACLK.ASSOCIATED_RESET">M_AXIS_ARESETN</spirit:value>
         </spirit:parameter>
-        <spirit:parameter>
-          <spirit:name>FREQ_HZ</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.M_AXIS_ACLK.FREQ_HZ"/>
-        </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
     <spirit:busInterface>
@@ -312,10 +364,6 @@
         <spirit:parameter>
           <spirit:name>ASSOCIATED_RESET</spirit:name>
           <spirit:value spirit:id="BUSIFPARAM_VALUE.S_AXI_ACLK.ASSOCIATED_RESET">S_AXI_ARESETN</spirit:value>
-        </spirit:parameter>
-        <spirit:parameter>
-          <spirit:name>FREQ_HZ</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.S_AXI_ACLK.FREQ_HZ"/>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -355,7 +403,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>9d44dc1f</spirit:value>
+            <spirit:value>c720fee3</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -380,7 +428,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>9d44dc1f</spirit:value>
+            <spirit:value>c720fee3</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -394,7 +442,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>602c1be2</spirit:value>
+            <spirit:value>429706e5</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -408,7 +456,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>08b6cc13</spirit:value>
+            <spirit:value>d4182767</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -990,7 +1038,7 @@
         <spirit:name>src/Video_FIFO/Video_FIFO.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_Sync_FIFO</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_Sync_FIFO/Video_FIFO</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>src/M_AXIS.vhd</spirit:name>
@@ -1015,7 +1063,7 @@
       <spirit:file>
         <spirit:name>src/OV7670.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_7267dc2d</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_dac201bd</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -1055,7 +1103,7 @@
         <spirit:name>src/Video_FIFO/Video_FIFO.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_Sync_FIFO</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_Sync_FIFO/Video_FIFO</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>src/M_AXIS.vhd</spirit:name>
@@ -1202,14 +1250,14 @@
         <xilinx:xpmLibrary>XPM_MEMORY</xilinx:xpmLibrary>
       </xilinx:xpmLibraries>
       <xilinx:vendorURL>https://www.kampis-elektroecke.de</xilinx:vendorURL>
-      <xilinx:coreRevision>3</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-08-27T20:35:41Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>1</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-04-06T16:12:43Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
-      <xilinx:xilinxVersion>2023.1.1</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="d509ab1a"/>
+      <xilinx:xilinxVersion>2020.2</xilinx:xilinxVersion>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="6494622e"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="1bdd2282"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="bfb96a93"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="8b59025d"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="c33ee381"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="efcc9ea1"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="6b6ebd37"/>

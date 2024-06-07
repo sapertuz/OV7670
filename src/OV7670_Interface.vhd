@@ -7,7 +7,7 @@
 -- Module Name:         OV7670_Interface - OV7670_Interface_Arch
 -- Project Name:        OV7670
 -- Target Devices:
--- Tool Versions:       Vivado 2023.1
+-- Tool Versions:       Vivado 2020.2
 -- Description:         OV7670 image sensor interface to capture 16 bit RGB 565 data from the image sensor.
 -- 
 -- Dependencies:
@@ -82,7 +82,7 @@ begin
 
             -- Start to receive the data after a VSYNC has been detected and when HREF is asserted
             when STATE_RECEIVE_DATA =>
-                FIFO_Data_Reg(15 downto 8) <= FIFO_Data_Reg(7 downto 0);
+                FIFO_Data_Reg(7 downto 0) <= FIFO_Data_Reg(15 downto 8);
          
                 if((HREF = '1') and (BytesReceived < 1)) then
                     BytesReceived <= BytesReceived + 1;
@@ -98,7 +98,7 @@ begin
     end process;
 
     --
-    FIFO_Data_Reg(7 downto 0) <= D;
+    FIFO_Data_Reg(15 downto 8) <= D;
          
     -- FIFO Write Enable
     -- The signal gets asserted when two data bytes from the camera were received
@@ -117,8 +117,8 @@ begin
         --  Byte 2: Red
         --  Byte 1: Blue
         --  Byte 0: Green
-        FIFO_Data <= ("000" & FIFO_Data_Reg(15 downto 11) &
-                      "000" & FIFO_Data_Reg(4 downto 0) &
+        FIFO_Data <= ("000" & FIFO_Data_Reg(15 downto 11) & 
+                      "000" & FIFO_Data_Reg(4 downto 0) & 
                       "00" & FIFO_Data_Reg(10 downto 5))
                       when (HREF = '1') else (others => '0');
     end generate;

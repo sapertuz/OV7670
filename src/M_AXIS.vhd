@@ -7,7 +7,7 @@
 -- Module Name:         M_AXIS - M_AXIS_Arch
 -- Project Name:        OV7670
 -- Target Devices:
--- Tool Versions:       Vivado 2023.1
+-- Tool Versions:       Vivado 2020.2
 -- Description:         AXI-Stream master interface for the OV7670 image sensor interface.
 -- 
 -- Dependencies:

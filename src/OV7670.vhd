@@ -7,7 +7,7 @@
 -- Module Name:         OV7670 - OV7670_Arch
 -- Project Name:        OV7670
 -- Target Devices:
--- Tool Versions:       Vivado 2023.1
+-- Tool Versions:       Vivado 2020.2
 -- Description:         AXI-Stream OV7670 sensor interface top layer module.
 -- 
 -- Dependencies:
