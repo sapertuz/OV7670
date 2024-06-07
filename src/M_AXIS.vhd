@@ -52,7 +52,8 @@ entity M_AXIS is
         M_AXIS_TVALID   : out STD_LOGIC;                                                        -- AXI4-Stream interface TVALID output
         M_AXIS_TDATA    : out STD_LOGIC_VECTOR((TDATA_WIDTH - 1) downto 0);                     -- AXI4-Stream interface TDATA output
         M_AXIS_TUSER    : out STD_LOGIC;                                                        -- AXI4-Stream interface TUSER output
-        M_AXIS_TLAST    : out STD_LOGIC                                                         -- AXI4-Stream interface TLAST output
+        M_AXIS_TLAST    : out STD_LOGIC;                                                        -- AXI4-Stream interface TLAST output
+        M_AXIS_TKEEP    : out STD_LOGIC_VECTOR(2 downto 0)
         );
 end M_AXIS;
 
@@ -143,5 +144,7 @@ begin
     M_AXIS_TUSER   <= AXIS_TUSER;
     M_AXIS_TVALID  <= AXIS_TVALID;
     Busy           <= IsBusy;
+    
+    M_AXIS_TKEEP <= (others => '1');
 
 end M_AXIS_Arch;

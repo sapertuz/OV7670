@@ -81,7 +81,8 @@ entity OV7670 is
 		M_AXIS_TVALID	: out STD_LOGIC;
 		M_AXIS_TDATA	: out STD_LOGIC_VECTOR(23 downto 0);
         M_AXIS_TUSER	: out STD_LOGIC;
-		M_AXIS_TLAST	: out STD_LOGIC
+		M_AXIS_TLAST	: out STD_LOGIC;
+		M_AXIS_TKEEP    : out STD_LOGIC_VECTOR(2 downto 0)
 		);
 end OV7670;
 
@@ -160,7 +161,8 @@ architecture OV7670_Arch of OV7670 is
             M_AXIS_TVALID	: out STD_LOGIC;
             M_AXIS_TDATA	: out STD_LOGIC_VECTOR((TDATA_WIDTH - 1) downto 0);
             M_AXIS_TUSER	: out STD_LOGIC;
-            M_AXIS_TLAST	: out STD_LOGIC
+            M_AXIS_TLAST	: out STD_LOGIC;
+            M_AXIS_TKEEP    : out STD_LOGIC_VECTOR(2 downto 0)
             );
 	end component;
 
@@ -257,7 +259,8 @@ begin
                                             M_AXIS_TVALID   => M_AXIS_TVALID,
                                             M_AXIS_TDATA    => M_AXIS_TDATA,
                                             M_AXIS_TUSER    => M_AXIS_TUSER,
-                                            M_AXIS_TLAST    => M_AXIS_TLAST
+                                            M_AXIS_TLAST    => M_AXIS_TLAST,
+                                            M_AXIS_TKEEP    => M_AXIS_TKEEP
                                             );
 
     Sync_FIFO       : Video_FIFO port map ( wr_clk  => Camera_Slow_Clock,
