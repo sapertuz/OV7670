@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <spirit:vendor>Kampis-Elektroecke</spirit:vendor>
-  <spirit:library>Kampis-Elektroecke</spirit:library>
+  <spirit:vendor>ads-tud</spirit:vendor>
+  <spirit:library>acsr</spirit:library>
   <spirit:name>OV7670</spirit:name>
   <spirit:version>1.0</spirit:version>
   <spirit:busInterfaces>
@@ -329,8 +329,8 @@
     </spirit:busInterface>
     <spirit:busInterface>
       <spirit:name>OV7670</spirit:name>
-      <spirit:busType spirit:vendor="www.kampis-elektroecke.de" spirit:library="Kampis-Elektroecke" spirit:name="OV7670" spirit:version="1.0"/>
-      <spirit:abstractionType spirit:vendor="www.kampis-elektroecke.de" spirit:library="Kampis-Elektroecke" spirit:name="OV7670_rtl" spirit:version="1.0"/>
+      <spirit:busType spirit:vendor="ads-tud" spirit:library="acsr" spirit:name="OV7670" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="ads-tud" spirit:library="acsr" spirit:name="OV7670_rtl" spirit:version="1.0"/>
       <spirit:slave/>
       <spirit:portMaps>
         <spirit:portMap>
@@ -343,26 +343,18 @@
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
+            <spirit:name>D</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>OV7670_D</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
             <spirit:name>HREF</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
             <spirit:name>OV7670_HREF</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>nReset</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>OV7670_nRESET</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>PWDN</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>OV7670_PWDN</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -375,10 +367,18 @@
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>D</spirit:name>
+            <spirit:name>nRESET</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>OV7670_D</spirit:name>
+            <spirit:name>OV7670_nRESET</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>PWDN</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>OV7670_PWDN</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
@@ -393,6 +393,16 @@
         <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">16</spirit:range>
         <spirit:width spirit:format="long" spirit:resolve="user">32</spirit:width>
         <spirit:usage>register</spirit:usage>
+        <spirit:register>
+          <spirit:name>HW_VERSION</spirit:name>
+          <spirit:addressOffset>0</spirit:addressOffset>
+          <spirit:size spirit:format="long">4</spirit:size>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>REG_CONFIG</spirit:name>
+          <spirit:addressOffset>4</spirit:addressOffset>
+          <spirit:size spirit:format="long">4</spirit:size>
+        </spirit:register>
       </spirit:addressBlock>
     </spirit:memoryMap>
   </spirit:memoryMaps>
@@ -419,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>de29a390</spirit:value>
+            <spirit:value>6721cebe</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -444,7 +454,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>de29a390</spirit:value>
+            <spirit:value>6721cebe</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1199,7 +1209,7 @@
       <spirit:file>
         <spirit:name>xgui/OV7670_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_429706e5</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_602c1be2</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -1283,15 +1293,17 @@
         <xilinx:xpmLibrary>XPM_CDC</xilinx:xpmLibrary>
         <xilinx:xpmLibrary>XPM_MEMORY</xilinx:xpmLibrary>
       </xilinx:xpmLibraries>
-      <xilinx:vendorURL>https://www.kampis-elektroecke.de</xilinx:vendorURL>
-      <xilinx:coreRevision>5</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2024-06-07T15:47:25Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>1</xilinx:coreRevision>
+      <xilinx:upgrades>
+        <xilinx:canUpgradeFrom>Kampis-Elektroecke:Kampis-Elektroecke:OV7670:1.0</xilinx:canUpgradeFrom>
+      </xilinx:upgrades>
+      <xilinx:coreCreationDateTime>2024-07-07T15:09:58Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2023.2</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="2e313461"/>
-      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="1bdd2282"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="09794a3b"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="1d298460"/>
+      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="8b137800"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="8b35e1a0"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="710d266f"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="efcc9ea1"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="6b6ebd37"/>
