@@ -33,7 +33,9 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity OV7670_Interface is
     Generic (
-        DATA_FORMATED   : BOOLEAN := true                                                   -- Format the output data to use them with a Xilinx AXI-Stream Video DMA
+        DATA_FORMATED   : BOOLEAN := true;                                                  -- Format the output data to use them with a Xilinx AXI-Stream Video DMA
+        DATA_RGB888_CONVERTED   : BOOLEAN := true;                                          -- Format the output data to be rgb888
+        DATA_RGB565_16B         : BOOLEAN := true                                           -- Format the output rgb565 data to be 16 bits
         );
     Port (
         -- OV7670 interface
@@ -115,12 +117,61 @@ begin
         --  Byte 1: 7 - 5 Green, 4 - 0 Blue
         -- The DMA receives the colors as 24 bit value:
         --  Byte 2: Red
-        --  Byte 1: Blue
-        --  Byte 0: Green
-        FIFO_Data <= ("000" & FIFO_Data_Reg(15 downto 11) & 
-                      "000" & FIFO_Data_Reg(4 downto 0) & 
-                      "00" & FIFO_Data_Reg(10 downto 5))
-                      when (HREF = '1') else (others => '0');
+        --  Byte 1: Green
+        --  Byte 0: Blue
+        Formated_Data_rgb888: if DATA_RGB888_CONVERTED = true generate
+
+            process(FIFO_Data_Reg, HREF)
+                variable r5 : unsigned(4 downto 0);
+                variable g6 : unsigned(5 downto 0);
+                variable b5 : unsigned(4 downto 0);
+                variable r8 : unsigned(13 downto 0);
+                variable g8 : unsigned(13 downto 0);
+                variable b8 : unsigned(13 downto 0);
+                variable r_temp : integer range 0 to 16383; -- 14 bits
+                variable g_temp : integer range 0 to 16383; -- 14 bits
+                variable b_temp : integer range 0 to 16383; -- 14 bits
+            begin
+                -- Extract R, G, B components from RGB565
+                r5 := unsigned(FIFO_Data_Reg(15 downto 11));
+                g6 := unsigned(FIFO_Data_Reg(10 downto 5));
+                b5 := unsigned(FIFO_Data_Reg(4 downto 0));
+
+                -- Convert to RGB888 using bit shifts and multiplication
+                r_temp := to_integer(r5) * 527 + 23;
+                g_temp := to_integer(g6) * 259 + 33;
+                b_temp := to_integer(b5) * 527 + 23;
+    
+                r8 := to_unsigned(r_temp, 14);
+                g8 := to_unsigned(g_temp, 14);
+                b8 := to_unsigned(b_temp, 14);
+
+                -- Combine into 24-bit RGB888 -- Shift 
+                if HREF = '1' then
+                    FIFO_Data <=    std_logic_vector(r8(13 downto 6)) & 
+                                    std_logic_vector(g8(13 downto 6)) &
+                                    std_logic_vector(b8(13 downto 6));
+                else
+                    FIFO_Data <= (others=>'0');
+                end if;
+            end process;    
+
+        else generate
+            
+            Formated_Data_RGB565_16B : if DATA_RGB565_16B = true generate
+                FIFO_Data <= ("00000000" & FIFO_Data_Reg)
+                    when (HREF = '1') else (others => '0');
+            
+            else generate
+                FIFO_Data <= ("000" & FIFO_Data_Reg(15 downto 11) & 
+                    "00" & FIFO_Data_Reg(10 downto 5)) &
+                    "000" & FIFO_Data_Reg(4 downto 0)
+                    when (HREF = '1') else (others => '0');
+                
+            end generate;
+
+        end generate;
+        
     end generate;
 
 end OV7670_Interface_Arch;

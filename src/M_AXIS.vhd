@@ -33,7 +33,8 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity M_AXIS is
     Generic (
-        TDATA_WIDTH     : INTEGER   := 32                                                       -- Data width for the AXI4-Stream interface
+        TDATA_WIDTH     : INTEGER   := 32;                                                      -- Data width for the AXI4-Stream interface
+        FIFO_DATA_WIDTH : INTEGER   := 32                                                       -- Data width for the Video FIFO
         );
 	Port (
         -- Status signals
@@ -43,7 +44,7 @@ entity M_AXIS is
         First           : in STD_LOGIC;                                                         -- CONTROL INPUT: Indicate the first packet from a transmission.
         Last            : in STD_LOGIC;                                                         -- CONTROL INPUT: Indicate the last packet from a transmission.
         Valid           : in STD_LOGIC;                                                         -- CONTROL INPUT: Indicate valid transmission data.
-        Data            : in STD_LOGIC_VECTOR((TDATA_WIDTH - 1) downto 0);                      -- Input data for the AXI4-Stream interface
+        Data            : in STD_LOGIC_VECTOR((FIFO_DATA_WIDTH - 1) downto 0);                      -- Input data for the AXI4-Stream interface
 
 		-- AXI-Stream interface
         M_AXIS_ACLK	    : in STD_LOGIC;                                                         -- AXI4-Stream interface clock input
@@ -65,14 +66,14 @@ architecture M_AXIS_Arch of M_AXIS is
     signal First_Reg            : STD_LOGIC                                         := '0';
     signal Last_Reg             : STD_LOGIC                                         := '0';
 
-    signal Data_Reg             : STD_LOGIC_VECTOR((TDATA_WIDTH - 1) downto 0)      := (others => '0');
+    signal Data_Reg             : STD_LOGIC_VECTOR((FIFO_DATA_WIDTH - 1) downto 0)      := (others => '0');
 
     -- AXI4-Stream signals
     signal AXIS_TransferDone    : STD_LOGIC                                         := '0';
     signal AXIS_TVALID          : STD_LOGIC                                         := '0';
     signal AXIS_TLAST           : STD_LOGIC                                         := '0';
     signal AXIS_TUSER           : STD_LOGIC                                         := '0';
-    signal AXIS_TDATA           : STD_LOGIC_VECTOR((TDATA_WIDTH - 1) downto 0)      := (others => '0');
+    signal AXIS_TDATA           : STD_LOGIC_VECTOR((FIFO_DATA_WIDTH - 1) downto 0)      := (others => '0');
 
     signal CurrentState         : State_t                                           := STATE_IDLE;
 
@@ -139,7 +140,7 @@ begin
     IsBusy <= '1' when ((CurrentState = STATE_SEND_STREAM) or (M_AXIS_ARESETN = '0')) else '0';
 
     -- I/O Connections assignments
-    M_AXIS_TDATA   <= AXIS_TDATA;
+    M_AXIS_TDATA   <= AXIS_TDATA(TDATA_WIDTH-1 downto 0);
     M_AXIS_TLAST   <= AXIS_TLAST;
     M_AXIS_TUSER   <= AXIS_TUSER;
     M_AXIS_TVALID  <= AXIS_TVALID;

@@ -36,10 +36,13 @@ use xpm.vcomponents.all;
 
 entity OV7670 is
     Generic (
-        C_IMAGE_WIDTH   : INTEGER   := 640;
-        C_IMAGE_HEIGHT  : INTEGER   := 480;
-        DATA_FORMATED   : BOOLEAN   := true                                             -- Format the output data to use them with a Xilinx AXI-Stream Video DMA
-        );
+        C_IMAGE_WIDTH           : INTEGER   := 640;
+        C_IMAGE_HEIGHT          : INTEGER   := 480;
+        DATA_FORMATED           : BOOLEAN   := true; -- Format the output data to use them with a Xilinx AXI-Stream Video DMA
+        DATA_RGB888_CONVERTED   : BOOLEAN   := true;
+        DATA_RGB565_16B         : BOOLEAN   := true;
+        TDATA_WIDTH             : INTEGER   := 24    -- Data width for the AXI4-Stream interface
+    );
 	Port (
         nRESET          : in STD_LOGIC;
 
@@ -83,7 +86,7 @@ entity OV7670 is
         M_AXIS_TUSER	: out STD_LOGIC;
 		M_AXIS_TLAST	: out STD_LOGIC;
 		M_AXIS_TKEEP    : out STD_LOGIC_VECTOR(2 downto 0)
-		);
+    );
 end OV7670;
 
 architecture OV7670_Arch of OV7670 is
@@ -127,7 +130,9 @@ architecture OV7670_Arch of OV7670 is
 
     component OV7670_Interface is
         Generic (
-            DATA_FORMATED   : BOOLEAN := true
+            DATA_FORMATED   : BOOLEAN := true;
+            DATA_RGB888_CONVERTED   : BOOLEAN   := true;
+            DATA_RGB565_16B         : BOOLEAN   := false
             );
         Port (
             PCLK            : in STD_LOGIC;
@@ -145,7 +150,8 @@ architecture OV7670_Arch of OV7670 is
 
     component M_AXIS is
         Generic (
-            TDATA_WIDTH     : INTEGER   := 32
+            TDATA_WIDTH     : INTEGER   := 32;
+            FIFO_DATA_WIDTH : INTEGER   := 32
             );
 		Port (
             Busy            : out STD_LOGIC;
@@ -179,110 +185,127 @@ architecture OV7670_Arch of OV7670 is
             );
     end component;
 
-    signal Camera_Slow_Clock    : STD_LOGIC                                         := '0';
-    signal Camera_Slow_WE       : STD_LOGIC                                         := '0';
-    signal Camera_Slow_Full     : STD_LOGIC                                         := '0';
-    signal Camera_FrameComplete : STD_LOGIC                                         := '0';    
-    signal Camera_Slow_Data     : STD_LOGIC_VECTOR(23 downto 0)                     := (others => '0');
+    signal Camera_Slow_Clock    : STD_LOGIC := '0';
+    signal Camera_Slow_WE       : STD_LOGIC := '0';
+    signal Camera_Slow_Full     : STD_LOGIC := '0';
+    signal Camera_FrameComplete : STD_LOGIC := '0';    
+    signal Camera_Slow_Data     : STD_LOGIC_VECTOR(23 downto 0) := (others => '0');
 
-    signal Stream_Fast_Clock    : STD_LOGIC                                         := '0';
-    signal Stream_Fast_Empty    : STD_LOGIC                                         := '0';
-    signal Stream_Fast_RE       : STD_LOGIC                                         := '0';
-    signal Stream_Fast_Busy     : STD_LOGIC                                         := '0';
-    signal Stream_Valid         : STD_LOGIC                                         := '0';
-    signal Stream_First         : STD_LOGIC                                         := '0';
-    signal Stream_Last          : STD_LOGIC                                         := '0';
-    signal Stream_Fast_Data     : STD_LOGIC_VECTOR(23 downto 0)                     := (others => '0');
+    signal Stream_Fast_Clock    : STD_LOGIC := '0';
+    signal Stream_Fast_Empty    : STD_LOGIC := '0';
+    signal Stream_Fast_RE       : STD_LOGIC := '0';
+    signal Stream_Fast_Busy     : STD_LOGIC := '0';
+    signal Stream_Valid         : STD_LOGIC := '0';
+    signal Stream_First         : STD_LOGIC := '0';
+    signal Stream_Last          : STD_LOGIC := '0';
+    signal Stream_Fast_Data     : STD_LOGIC_VECTOR(23 downto 0) := (others => '0');
 
-    signal Enable_Fast          : STD_LOGIC                                         := '0';
+    signal Enable_Fast          : STD_LOGIC := '0';
 
-    signal Pixel                : INTEGER                                           := 0;
-    signal Row                  : INTEGER                                           := 0;
+    signal Pixel                : INTEGER := 0;
+    signal Row                  : INTEGER := 0;
 
-    signal AXI_State            : AXI_State_t                                       := STATE_WAIT;
+    signal AXI_State            : AXI_State_t := STATE_WAIT;
 
 begin
 
-    Camera_Control : OV7670_Control generic map (   C_S_AXI_DATA_WIDTH => 32,
-                                                    C_S_AXI_ADDR_WIDTH => 4
-                                                    )
-                                    port map (  nRESET          => nRESET,
-                                                Enable          => Enable,
-                                                OV7670_nRESET   => OV7670_nRESET,
-                                                OV7670_PWDN     => OV7670_PWDN,
-                                                S_AXI_ACLK      => S_AXI_ACLK,
-                                                S_AXI_ARESETN   => S_AXI_ARESETN,
-                                                S_AXI_AWADDR    => S_AXI_AWADDR,
-                                                S_AXI_AWPROT	=> S_AXI_AWPROT,
-                                                S_AXI_AWVALID	=> S_AXI_AWVALID,
-                                                S_AXI_AWREADY	=> S_AXI_AWREADY,
-                                                S_AXI_WDATA	    => S_AXI_WDATA,
-                                                S_AXI_WSTRB	    => S_AXI_WSTRB,
-                                                S_AXI_WVALID	=> S_AXI_WVALID,
-                                                S_AXI_WREADY	=> S_AXI_WREADY,
-                                                S_AXI_BRESP	    => S_AXI_BRESP,
-                                                S_AXI_BVALID	=> S_AXI_BVALID,
-                                                S_AXI_BREADY	=> S_AXI_BREADY,
-                                                S_AXI_ARADDR	=> S_AXI_ARADDR,
-                                                S_AXI_ARPROT	=> S_AXI_ARPROT,
-                                                S_AXI_ARVALID	=> S_AXI_ARVALID,
-                                                S_AXI_ARREADY	=> S_AXI_ARREADY,
-                                                S_AXI_RDATA	    => S_AXI_RDATA,
-                                                S_AXI_RRESP	    => S_AXI_RRESP,
-                                                S_AXI_RVALID	=> S_AXI_RVALID,
-                                                S_AXI_RREADY	=> S_AXI_RREADY
-                                                );
+    Camera_Control : OV7670_Control 
+    generic map (   
+        C_S_AXI_DATA_WIDTH => 32,
+        C_S_AXI_ADDR_WIDTH => 4
+    )
+    port map (  
+        nRESET          => nRESET,
+        Enable          => Enable,
+        OV7670_nRESET   => OV7670_nRESET,
+        OV7670_PWDN     => OV7670_PWDN,
+        S_AXI_ACLK      => S_AXI_ACLK,
+        S_AXI_ARESETN   => S_AXI_ARESETN,
+        S_AXI_AWADDR    => S_AXI_AWADDR,
+        S_AXI_AWPROT	=> S_AXI_AWPROT,
+        S_AXI_AWVALID	=> S_AXI_AWVALID,
+        S_AXI_AWREADY	=> S_AXI_AWREADY,
+        S_AXI_WDATA	    => S_AXI_WDATA,
+        S_AXI_WSTRB	    => S_AXI_WSTRB,
+        S_AXI_WVALID	=> S_AXI_WVALID,
+        S_AXI_WREADY	=> S_AXI_WREADY,
+        S_AXI_BRESP	    => S_AXI_BRESP,
+        S_AXI_BVALID	=> S_AXI_BVALID,
+        S_AXI_BREADY	=> S_AXI_BREADY,
+        S_AXI_ARADDR	=> S_AXI_ARADDR,
+        S_AXI_ARPROT	=> S_AXI_ARPROT,
+        S_AXI_ARVALID	=> S_AXI_ARVALID,
+        S_AXI_ARREADY	=> S_AXI_ARREADY,
+        S_AXI_RDATA	    => S_AXI_RDATA,
+        S_AXI_RRESP	    => S_AXI_RRESP,
+        S_AXI_RVALID	=> S_AXI_RVALID,
+        S_AXI_RREADY	=> S_AXI_RREADY
+    );
 
-    Camera_Interface : OV7670_Interface generic map ( DATA_FORMATED => DATA_FORMATED
-                                                      )
-                                        port map (    PCLK      => OV7670_PCLK,
-                                                      nReset    => nRESET,
-                                                      Enable    => Enable,
-                                                      D         => OV7670_D,
-                                                      VSYNC     => OV7670_VSYNC,
-                                                      HREF      => OV7670_HREF,
-                                                      FIFO_Full => Camera_Slow_Full,
-                                                      FIFO_Data => Camera_Slow_Data,
-                                                      FIFO_WE   => Camera_Slow_WE
-                                                      );
+    Camera_Interface : OV7670_Interface 
+    generic map (   
+        DATA_FORMATED => DATA_FORMATED,
+        DATA_RGB888_CONVERTED => DATA_RGB888_CONVERTED,
+        DATA_RGB565_16B => DATA_RGB565_16B
+    )
+    port map (
+        PCLK      => OV7670_PCLK,
+        nReset    => nRESET,
+        Enable    => Enable,
+        D         => OV7670_D,
+        VSYNC     => OV7670_VSYNC,
+        HREF      => OV7670_HREF,
+        FIFO_Full => Camera_Slow_Full,
+        FIFO_Data => Camera_Slow_Data,
+        FIFO_WE   => Camera_Slow_WE
+    );
 
-    Stream_Interface : M_AXIS generic map ( TDATA_WIDTH => 24
-                                            )
-                              port map (    Busy            => Stream_Fast_Busy,
-                                            Valid           => Stream_Valid,
-                                            First           => Stream_First,
-                                            Last            => Stream_Last,
-                                            Data            => Stream_Fast_Data,
-                                            M_AXIS_ACLK     => M_AXIS_ACLK,
-                                            M_AXIS_ARESETN  => M_AXIS_ARESETN,
-                                            M_AXIS_TREADY   => M_AXIS_TREADY,
-                                            M_AXIS_TVALID   => M_AXIS_TVALID,
-                                            M_AXIS_TDATA    => M_AXIS_TDATA,
-                                            M_AXIS_TUSER    => M_AXIS_TUSER,
-                                            M_AXIS_TLAST    => M_AXIS_TLAST,
-                                            M_AXIS_TKEEP    => M_AXIS_TKEEP
-                                            );
+    Stream_Interface : M_AXIS 
+    generic map ( 
+        TDATA_WIDTH => TDATA_WIDTH,
+        FIFO_DATA_WIDTH => 24
+    )
+    port map (    
+        Busy            => Stream_Fast_Busy,
+        Valid           => Stream_Valid,
+        First           => Stream_First,
+        Last            => Stream_Last,
+        Data            => Stream_Fast_Data,
+        M_AXIS_ACLK     => M_AXIS_ACLK,
+        M_AXIS_ARESETN  => M_AXIS_ARESETN,
+        M_AXIS_TREADY   => M_AXIS_TREADY,
+        M_AXIS_TVALID   => M_AXIS_TVALID,
+        M_AXIS_TDATA    => M_AXIS_TDATA,
+        M_AXIS_TUSER    => M_AXIS_TUSER,
+        M_AXIS_TLAST    => M_AXIS_TLAST,
+        M_AXIS_TKEEP    => M_AXIS_TKEEP
+    );
 
-    Sync_FIFO       : Video_FIFO port map ( wr_clk  => Camera_Slow_Clock,
-                                            din     => Camera_Slow_Data,
-                                            wr_en   => Camera_Slow_WE,
-                                            full    => Camera_Slow_Full,
-                                            rd_clk  => Stream_Fast_Clock,
-                                            dout    => Stream_Fast_Data,
-                                            rd_en   => Stream_Fast_RE,
-                                            empty   => Stream_Fast_Empty
-                                            );
+    Sync_FIFO       : Video_FIFO 
+    port map ( 
+        wr_clk  => Camera_Slow_Clock,
+        din     => Camera_Slow_Data,
+        wr_en   => Camera_Slow_WE,
+        full    => Camera_Slow_Full,
+        rd_clk  => Stream_Fast_Clock,
+        dout    => Stream_Fast_Data,
+        rd_en   => Stream_Fast_RE,
+        empty   => Stream_Fast_Empty
+    );
 
-   Sync_Enable : xpm_cdc_single generic map ( DEST_SYNC_FF => 4,
-                                              INIT_SYNC_FF => 0,
-                                              SIM_ASSERT_CHK => 0,
-                                              SRC_INPUT_REG => 1
-                                              )
-                                port map ( dest_out => Enable_Fast,
-                                           dest_clk => M_AXIS_ACLK,
-                                           src_clk  => Camera_Slow_Clock,
-                                           src_in   => Enable
-                                           );
+    Sync_Enable : xpm_cdc_single 
+    generic map ( 
+        DEST_SYNC_FF => 4,
+        INIT_SYNC_FF => 0,
+        SIM_ASSERT_CHK => 0,
+        SRC_INPUT_REG => 1
+    )
+    port map ( 
+        dest_out => Enable_Fast,
+        dest_clk => M_AXIS_ACLK,
+        src_clk  => Camera_Slow_Clock,
+        src_in   => Enable
+    );
 
     -- This process read the data from the FIFO and transmit them over the AXI-Stream interface
     ReadFIFO_Proc : process
