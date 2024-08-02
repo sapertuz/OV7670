@@ -1,2 +1,3 @@
-1.00					Initial release
-1.01                    Replace files from Zybo Git repo
+1.00    Initial release
+1.01    Replace files from Zybo Git repo
+1.10    Added support for true full rgb888 range and 16-bit for rgb565 stream and fix frame synch

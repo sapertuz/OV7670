@@ -33,26 +33,26 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity OV7670_Interface is
     Generic (
-        DATA_FORMATED   : BOOLEAN := true;                                                  -- Format the output data to use them with a Xilinx AXI-Stream Video DMA
-        DATA_RGB888_CONVERTED   : BOOLEAN := true;                                          -- Format the output data to be rgb888
-        DATA_RGB565_16B         : BOOLEAN := true                                           -- Format the output rgb565 data to be 16 bits
+        DATA_FORMATED           : BOOLEAN := true;          -- Format the output data to use them with a Xilinx AXI-Stream Video DMA
+        DATA_RGB888_CONVERTED   : BOOLEAN := true;          -- Format the output data to be rgb888
+        DATA_RGB565_16B         : BOOLEAN := true           -- Format the output rgb565 data to be 16 bits
         );
     Port (
         -- OV7670 interface
-        PCLK            : in STD_LOGIC;                                                     -- CAMERA INPUT: Pixel clock from the camera sensor
-        nReset          : in STD_LOGIC;                                                     -- CONTROL INPUT:
-        VSYNC           : in STD_LOGIC;                                                     -- CAMERA INPUT: VSYNC from the camera sensor
-        HREF            : in STD_LOGIC;                                                     -- CAMERA INPUT: HREF from the camera sensor
-        D               : in STD_LOGIC_VECTOR(7 downto 0);                                  -- CAMERA INPUT: Pixel data from the camera sensor
+        PCLK            : in STD_LOGIC;                     -- CAMERA INPUT: Pixel clock from the camera sensor
+        nReset          : in STD_LOGIC;                     -- CONTROL INPUT:
+        VSYNC           : in STD_LOGIC;                     -- CAMERA INPUT: VSYNC from the camera sensor
+        HREF            : in STD_LOGIC;                     -- CAMERA INPUT: HREF from the camera sensor
+        D               : in STD_LOGIC_VECTOR(7 downto 0);  -- CAMERA INPUT: Pixel data from the camera sensor
 
         Enable          : in STD_LOGIC;
 
-        FrameComplete   : out STD_LOGIC;                                                    -- STATUS OUTPUT: A complete frame is received
+        FrameComplete   : out STD_LOGIC;                    -- STATUS OUTPUT: A complete frame is received
 
         -- FIFO interface
-        FIFO_Full       : in STD_LOGIC;                                                     -- FIFO INPUT: FIFO full control signal
-        FIFO_Data       : out STD_LOGIC_VECTOR(23 downto 0);                                -- FIFO OUTPUT: Pixel data for the FIFO
-        FIFO_WE         : out STD_LOGIC                                                     -- FIFO OUTPUT: Write enable signal for the FIFO
+        FIFO_Full       : in STD_LOGIC;                     -- FIFO INPUT: FIFO full control signal
+        FIFO_Data       : out STD_LOGIC_VECTOR(23 downto 0);-- FIFO OUTPUT: Pixel data for the FIFO
+        FIFO_WE         : out STD_LOGIC                     -- FIFO OUTPUT: Write enable signal for the FIFO
         );
 end OV7670_Interface;
 
@@ -156,18 +156,20 @@ begin
                 end if;
             end process;    
 
-        else generate
+        end generate;
+        
+        Formated_Data_rgb565: if DATA_RGB888_CONVERTED = false generate
             
             Formated_Data_RGB565_16B : if DATA_RGB565_16B = true generate
-                FIFO_Data <= ("00000000" & FIFO_Data_Reg)
+                FIFO_Data <= "00000000" & FIFO_Data_Reg
                     when (HREF = '1') else (others => '0');
+            end generate;
             
-            else generate
+            Formated_Data_RGB565_24B : if DATA_RGB565_16B = false generate
                 FIFO_Data <= ("000" & FIFO_Data_Reg(15 downto 11) & 
                     "00" & FIFO_Data_Reg(10 downto 5)) &
                     "000" & FIFO_Data_Reg(4 downto 0)
                     when (HREF = '1') else (others => '0');
-                
             end generate;
 
         end generate;

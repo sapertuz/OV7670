@@ -5,7 +5,7 @@
     "cell_name": "Sync_FIFO",
     "component_reference": "xilinx.com:ip:fifo_generator:13.2",
     "ip_revision": "9",
-    "gen_directory": "../../../../../Vivado_WS/acsr/camera_prj/camera_prj.tmp/OV7670_v1_0_project/OV7670_v1_0_project.gen/sources_1/ip/Video_FIFO",
+    "gen_directory": "../../../../camera_ex/camera_ex.tmp/OV7670_v1_1_project/OV7670_v1_1_project.gen/sources_1/ip/Video_FIFO",
     "parameters": {
       "component_parameters": {
         "Component_Name": [ { "value": "Video_FIFO", "resolve_type": "user", "usage": "all" } ],
@@ -383,11 +383,11 @@
       },
       "project_parameters": {
         "ARCHITECTURE": [ { "value": "zynq" } ],
-        "BASE_BOARD_PART": [ { "value": "" } ],
+        "BASE_BOARD_PART": [ { "value": "www.digilentinc.com:pynq-z1:part0:1.0" } ],
         "BOARD_CONNECTIONS": [ { "value": "" } ],
         "DEVICE": [ { "value": "xc7z020" } ],
         "PACKAGE": [ { "value": "clg400" } ],
-        "PREFHDL": [ { "value": "VHDL" } ],
+        "PREFHDL": [ { "value": "VERILOG" } ],
         "SILICON_REVISION": [ { "value": "" } ],
         "SIMULATOR_LANGUAGE": [ { "value": "MIXED" } ],
         "SPEEDGRADE": [ { "value": "-1" } ],
@@ -400,7 +400,7 @@
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
         "IPREVISION": [ { "value": "9" } ],
         "MANAGED": [ { "value": "TRUE" } ],
-        "OUTPUTDIR": [ { "value": "../../../../../Vivado_WS/acsr/camera_prj/camera_prj.tmp/OV7670_v1_0_project/OV7670_v1_0_project.gen/sources_1/ip/Video_FIFO" } ],
+        "OUTPUTDIR": [ { "value": "../../../../camera_ex/camera_ex.tmp/OV7670_v1_1_project/OV7670_v1_1_project.gen/sources_1/ip/Video_FIFO" } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],
         "SHAREDDIR": [ { "value": "." } ],
         "SWVERSION": [ { "value": "2023.2" } ],

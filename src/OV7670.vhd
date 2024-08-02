@@ -34,13 +34,13 @@ use IEEE.NUMERIC_STD.ALL;
 Library xpm;
 use xpm.vcomponents.all;
 
+use work.OV7670_utils.all;
+
 entity OV7670 is
     Generic (
-        C_IMAGE_WIDTH           : INTEGER   := 640;
-        C_IMAGE_HEIGHT          : INTEGER   := 480;
+        C_IMAGE_RES             : STRING   := "VGA";
         DATA_FORMATED           : BOOLEAN   := true; -- Format the output data to use them with a Xilinx AXI-Stream Video DMA
         DATA_RGB888_CONVERTED   : BOOLEAN   := true;
-        DATA_RGB565_16B         : BOOLEAN   := true;
         TDATA_WIDTH             : INTEGER   := 24    -- Data width for the AXI4-Stream interface
     );
 	Port (
@@ -93,6 +93,10 @@ architecture OV7670_Arch of OV7670 is
 
     type AXI_State_t     is (STATE_WAIT, STATE_GET_DATA, STATE_SEND);
 
+    constant DATA_RGB565_16B : BOOLEAN := (TDATA_WIDTH = 16);
+    constant C_IMAGE_WIDTH   : INTEGER   := get_image_width(C_IMAGE_RES);
+    constant C_IMAGE_HEIGHT  : INTEGER   := get_image_height(C_IMAGE_RES);
+    
     signal Enable           : STD_LOGIC;
 
     component OV7670_Control is
@@ -347,7 +351,7 @@ begin
 
         end case;
 
-        if(M_AXIS_ARESETN = '0') then
+        if(M_AXIS_ARESETN = '0' or OV7670_VSYNC = '1') then
             Pixel <= 0;
             Row <= 0;
 
