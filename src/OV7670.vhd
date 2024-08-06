@@ -209,6 +209,10 @@ architecture OV7670_Arch of OV7670 is
     signal Pixel                : INTEGER := 0;
     signal Row                  : INTEGER := 0;
 
+    signal OV7670_VSYNC_prev    : STD_LOGIC := '0';
+    signal OV7670_VSYNC_edge    : STD_LOGIC := '0';
+    signal OV7670_VSYNC_risefall: STD_LOGIC := '1'; -- 0 for falling edge, 1 for rising edge
+
     signal AXI_State            : AXI_State_t := STATE_WAIT;
 
 begin
@@ -310,7 +314,20 @@ begin
         src_clk  => Camera_Slow_Clock,
         src_in   => Enable
     );
-
+    
+    -- This process detects an edge on Vsync
+    process (M_AXIS_ACLK)
+    begin
+        if rising_edge(M_AXIS_ACLK) then
+            if (OV7670_VSYNC = OV7670_VSYNC_risefall) and (OV7670_VSYNC_prev = not(OV7670_VSYNC_risefall)) then
+                OV7670_VSYNC_edge <= '1';
+            else
+                OV7670_VSYNC_edge <= '0';
+            end if;
+            OV7670_VSYNC_prev <= OV7670_VSYNC;
+        end if;
+    end process;
+    
     -- This process read the data from the FIFO and transmit them over the AXI-Stream interface
     ReadFIFO_Proc : process
     begin
@@ -351,7 +368,7 @@ begin
 
         end case;
 
-        if(M_AXIS_ARESETN = '0' or OV7670_VSYNC = '1') then
+        if(M_AXIS_ARESETN = '0' or OV7670_VSYNC_edge = '1') then
             Pixel <= 0;
             Row <= 0;
 
